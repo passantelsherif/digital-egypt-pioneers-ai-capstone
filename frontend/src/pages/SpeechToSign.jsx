@@ -9,8 +9,6 @@ const API = 'http://localhost:8000'
 const LANGUAGES = {
   'English (US)': 'en',
   'Arabic (Egypt)': 'ar',
-  'French': 'fr',
-  'German': 'de',
 }
 
 // Audio file types whisper can handle
