@@ -13,6 +13,9 @@ const LANGUAGES = {
   'German': 'de',
 }
 
+// Audio file types whisper can handle
+const ACCEPTED_AUDIO = '.mp3,.wav,.m4a,.ogg,.flac,.webm,.mp4'
+
 export default function SpeechToSign() {
   const nav = useNavigate()
 
@@ -23,6 +26,11 @@ export default function SpeechToSign() {
   const [current, setCurrent]       = useState(0)
   const [status, setStatus]         = useState('')  // 'recording' | 'transcribing' | 'done' | 'error'
   const [manualText, setManualText] = useState('')
+
+  // ── File upload state ─────────────────────────────────────────────────────
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [fileStatus, setFileStatus]     = useState('')  // 'uploading' | 'done' | 'error'
+  const fileInputRef = useRef(null)
 
   const mediaRef   = useRef(null)
   const chunksRef  = useRef([])
@@ -77,6 +85,48 @@ export default function SpeechToSign() {
     }
   }
 
+  // ── Upload audio file ─────────────────────────────────────────────────────
+  async function handleFileUpload(file) {
+    if (!file) return
+    setSelectedFile(file)
+    setFileStatus('uploading')
+    setTranscript('')
+    setTokens([])
+
+    const formData = new FormData()
+    formData.append('audio', file, file.name)
+    formData.append('language', LANGUAGES[langLabel])
+
+    try {
+      const res  = await fetch(`${API}/transcribe`, { method: 'POST', body: formData })
+      const data = await res.json()
+      if (data.error) {
+        setFileStatus('error')
+        setTranscript(data.error)
+      } else {
+        setTranscript(data.text)
+        setFileStatus('done')
+        setStatus('done')
+        await fetchTokens(data.text)
+      }
+    } catch {
+      setFileStatus('error')
+      setTranscript('Could not reach backend.')
+    }
+  }
+
+  function handleFileDrop(e) {
+    e.preventDefault()
+    const file = e.dataTransfer.files[0]
+    if (file) handleFileUpload(file)
+  }
+
+  function clearFile() {
+    setSelectedFile(null)
+    setFileStatus('')
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   // ── Fetch landmarks for each letter ──────────────────────────────────────
   async function fetchTokens(text) {
     const lang = LANGUAGES[langLabel]
@@ -118,7 +168,7 @@ export default function SpeechToSign() {
         <select
           className={styles.langSelect}
           value={langLabel}
-          onChange={e => { setLangLabel(e.target.value); setTokens([]); setTranscript('') }}
+          onChange={e => { setLangLabel(e.target.value); setTokens([]); setTranscript(''); clearFile() }}
         >
           {Object.keys(LANGUAGES).map(l => <option key={l}>{l}</option>)}
         </select>
@@ -139,12 +189,63 @@ export default function SpeechToSign() {
         {status === 'transcribing' && (
           <div className={styles.pulse}>⏳ Transcribing…</div>
         )}
-        {status === 'done' && transcript && (
+        {status === 'done' && transcript && fileStatus === '' && (
           <div className={styles.transcript}>✅ {transcript}</div>
         )}
-        {status === 'error' && (
+        {status === 'error' && fileStatus === '' && (
           <div className={styles.transcriptError}>⚠️ {transcript}</div>
         )}
+      </div>
+
+      {/* ── File Upload Section ── */}
+      <div className={styles.uploadSection}>
+        <span className={styles.manualLabel}>— or upload an audio file —</span>
+
+        <div
+          className={`${styles.dropZone} ${fileStatus === 'uploading' ? styles.dropZoneActive : ''}`}
+          onDragOver={e => e.preventDefault()}
+          onDrop={handleFileDrop}
+          onClick={() => !selectedFile && fileInputRef.current?.click()}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={ACCEPTED_AUDIO}
+            style={{ display: 'none' }}
+            onChange={e => handleFileUpload(e.target.files[0])}
+          />
+
+          {!selectedFile ? (
+            <>
+              <span className={styles.uploadIcon}>📂</span>
+              <span className={styles.uploadHint}>
+                Drag & drop or <u>browse</u> — mp3, wav, m4a, ogg…
+              </span>
+            </>
+          ) : (
+            <div className={styles.fileInfo}>
+              <span className={styles.fileName}>🎵 {selectedFile.name}</span>
+
+              {fileStatus === 'uploading' && (
+                <span className={styles.pulse}>⏳ Transcribing…</span>
+              )}
+              {fileStatus === 'done' && (
+                <span className={styles.transcript}>✅ {transcript}</span>
+              )}
+              {fileStatus === 'error' && (
+                <span className={styles.transcriptError}>⚠️ {transcript}</span>
+              )}
+
+              <button
+                className="btn btn-ghost"
+                style={{ fontSize: 12, padding: '4px 10px' }}
+                onClick={e => { e.stopPropagation(); clearFile(); setTokens([]); setTranscript('') }}
+              >
+                ✕ Clear
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Manual override */}
@@ -216,10 +317,10 @@ export default function SpeechToSign() {
       )}
 
       {/* Empty state */}
-      {tokens.length === 0 && status !== 'recording' && status !== 'transcribing' && (
+      {tokens.length === 0 && status !== 'recording' && status !== 'transcribing' && fileStatus !== 'uploading' && (
         <div className={styles.empty}>
           <span>🎙️</span>
-          <p>Record your voice or type a word to see the signs</p>
+          <p>Record your voice, upload an audio file, or type a word to see the signs</p>
         </div>
       )}
     </div>

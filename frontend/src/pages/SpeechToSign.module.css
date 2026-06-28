@@ -215,6 +215,70 @@
   padding: 60px 20px;
   color: #374151;
 }
+/* ── Append these classes to your SpeechToSign.module.css ── */
 
+/* Upload section wrapper — same spacing as manualRow */
+.uploadSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Drop zone */
+.dropZone {
+  width: 100%;
+  max-width: 560px;
+  min-height: 90px;
+  border: 2px dashed #2e3650;
+  border-radius: 12px;
+  background: #161b27;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  padding: 16px 20px;
+}
+.dropZone:hover {
+  border-color: #6d28d9;
+  background: #1a1f30;
+}
+.dropZoneActive {
+  border-color: #6d28d9;
+  background: #1e1640;
+}
+
+.uploadIcon {
+  font-size: 28px;
+  line-height: 1;
+}
+.uploadHint {
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+}
+.uploadHint u {
+  color: #a78bfa;
+  cursor: pointer;
+}
+
+/* File selected state */
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.fileName {
+  font-size: 13px;
+  color: #c4b5fd;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+  text-align: center;
+}
 .empty span { font-size: 48px; }
 .empty p    { font-size: 15px; }
