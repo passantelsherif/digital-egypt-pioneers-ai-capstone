@@ -2,6 +2,11 @@
 Sawa backend — FastAPI + WebSocket
 Run with: uvicorn main:app --reload --port 8000
 """
+import os
+# Disable XLA and CUDA before importing TensorFlow
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices=false'
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 from faster_whisper import WhisperModel
 import soundfile as sf
 import io
@@ -9,7 +14,6 @@ from fastapi import UploadFile, File, Form
 import asyncio
 import base64
 import json
-import os
 
 import cv2
 import numpy as np
@@ -213,3 +217,4 @@ async def transcribe(audio: UploadFile = File(...), language: str = Form("en")):
 
     except Exception as e:
         return {"error": str(e)}
+
