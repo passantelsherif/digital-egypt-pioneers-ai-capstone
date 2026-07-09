@@ -127,11 +127,8 @@ def get_letters(lang: str):
 @app.websocket("/ws/sign-to-text")
 async def sign_to_text_ws(websocket: WebSocket):
     """
-    Client → { lang, frame: <base64 jpeg> }
-    Server → { letter, conf }
-    The server detects hand landmarks and returns the predicted letter
-    and confidence. No annotated frame is sent back — the frontend
-    displays its own live camera feed.
+    Client -> { lang, frame: <base64 jpeg> }
+    Server -> { letter, conf }
     """
     await websocket.accept()
     loop = asyncio.get_event_loop()

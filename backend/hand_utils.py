@@ -18,11 +18,8 @@ def download_model():
         print("✅ Download complete!")
 
 def normalize_hand_landmarks(flat_xyz63):
-    """Center on the wrist (landmark 0) and scale by the hand's bounding-box
-    diagonal. Must match the normalization used in the training notebook
-    (CELL 6) exactly -- the alphabet MLP was trained on normalized vectors,
-    not raw MediaPipe coordinates, so skipping this step here would feed the
-    model out-of-distribution input and silently tank accuracy."""
+    """Centers coordinates on wrist and scales by bounding box.
+    Matches the training notebook normalizations."""
     pts = np.array(flat_xyz63, dtype=np.float32).reshape(21, 3)
     wrist = pts[0].copy()
     pts -= wrist
@@ -38,9 +35,7 @@ class HandTracker:
         options = HandLandmarkerOptions(
             base_options=mp_task.BaseOptions(model_asset_path=MODEL_PATH),
             num_hands=2,
-            # Matches the extraction settings used in the training notebook
-            # (CELL 6) so live inference sees the same detection behavior
-            # the model was trained on.
+            # match training notebook extraction settings
             min_hand_detection_confidence=0.5,
             min_hand_presence_confidence=0.5,
             min_tracking_confidence=0.5,
