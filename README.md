@@ -192,13 +192,13 @@ This same mechanism works identically for English and Arabic.
 
 Built collaboratively by a five-person team — no fixed role assignments, everyone owned whatever the project needed at each stage.
 
-| Name | GitHub |
-|---|---|
-| Omar Bassam Mahmoud *(Team Leader)* | |
-| Saher Atef Faheem | |
-| Anas Alaa Saad | |
-| Passant Shaaban Abdelazeem | |
-| Omar Hany Tohami | |
+| Name |
+|---|
+| Omar Bassam Mahmoud *(Team Leader)* | 
+| Saher Atef Faheem | 
+| Anas Alaa Saad | 
+| Passant Shaaban Abdelazeem | 
+| Omar Hany Tohami | 
 
 ---
 
