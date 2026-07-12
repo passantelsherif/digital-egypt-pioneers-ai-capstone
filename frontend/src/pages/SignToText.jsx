@@ -244,6 +244,9 @@ export default function SignToText() {
           />
           <div className={styles.controls}>
             <button className="btn btn-ghost" onClick={() => setTextBuffer(b => b.slice(0, -1))}>{t.delete}</button>
+            {lang === 'ar' && (
+              <button className="btn btn-ghost" onClick={() => setTextBuffer(b => b + ' ')}>{t.space}</button>
+            )}
             <button className="btn btn-ghost" onClick={clearBuffer}>{t.clear}</button>
             <button className="btn btn-ghost" onClick={() => navigator.clipboard?.writeText(textBuffer)} disabled={!textBuffer}>{t.copy}</button>
           </div>
