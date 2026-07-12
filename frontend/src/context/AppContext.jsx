@@ -30,6 +30,7 @@ export const T = {
     startCamera:      '▶ Start camera',
     stopCamera:       '⏹ Stop camera',
     delete:           '⌫ Delete',
+    space:            '␣ Space',
     copy:             '📋 Copy',
     cameraOff:        'Camera is off',
     tip:              'Hold a sign steady for ~0.8s to type it · Sign SPACE to add a space · Sign DEL to delete',
@@ -73,9 +74,10 @@ export const T = {
     startCamera:      '▶ تشغيل الكاميرا',
     stopCamera:       '⏹ إيقاف الكاميرا',
     delete:           '⌫ حذف',
+    space:            '␣ مسافة',
     copy:             '📋 نسخ',
     cameraOff:        'الكاميرا متوقفة',
-    tip:              'ابقِ الإشارة ثابتة لمدة ~٠.٨ ثانية لكتابتها · أشِر بـ SPACE لمسافة · أشِر بـ DEL للحذف',
+    tip:              'ابقِ الإشارة ثابتة لمدة ~٠.٨ ثانية لكتابتها · اضغط زر المسافة للفصل بين الكلمات · أشِر بـ DEL للحذف',
 
     // Speech to Sign
     sts_title:        '🎙️ صوت إلى إشارة',
